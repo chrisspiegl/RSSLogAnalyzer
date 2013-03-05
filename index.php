@@ -45,7 +45,7 @@ processLog();
         <td>Avg 7 Day</td>
     </tr>
     <?php foreach($analyzedData as $page=>$val): ?>
-        <?php if(preg_match('|'.$API_AUTH[$_SERVER['PHP_AUTH_USER']][1].'|', $page)): ?>
+        <?php if(preg_match($API_AUTH[$_SERVER['PHP_AUTH_USER']][1], $page)): ?>
         <tr>
             <td><?=$page; ?></td>
             <td><abbr title="<?=$val['maxOverallDay']; ?>"><?=$val['maxOverall']; ?></abbr></td>
