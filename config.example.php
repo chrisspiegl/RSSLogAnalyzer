@@ -11,7 +11,7 @@
 // Second Parameter is a restriction to domains, you can use RegEx to tailor your needs.
 // Wildcard: '(.*)'
 $API_AUTH = array(
-    'YOUR_USERNAME' => array('YOUR_SHA1_ENCRYPTED_PASSWORD', '(.*)'),
+    'YOUR_USERNAME' => array('YOUR_SHA1_ENCRYPTED_PASSWORD', '/(.*)/'),
 );
 
 // Define some folders for the process
