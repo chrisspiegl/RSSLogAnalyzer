@@ -48,10 +48,10 @@ processLog();
         <?php if(preg_match($API_AUTH[$_SERVER['PHP_AUTH_USER']][1], $page)): ?>
         <tr>
             <td><?=$page; ?></td>
-            <td><abbr title="<?=round($val['maxOverallDay']); ?>"><?=$val['maxOverall']; ?></abbr></td>
-            <td><abbr title="<?=round($val['max7dayDay']); ?>"><?=$val['max7day']; ?></abbr></td>
-            <td><?=round($val['avgOverall'],2); ?></td>
-            <td><?=round($val['avg7day'],2); ?></td>
+            <td><abbr title="<?=$val['maxOverallDay']; ?>"><?=$val['maxOverall']; ?></abbr></td>
+            <td><abbr title="<?=$val['max7dayDay']; ?>"><?=$val['max7day']; ?></abbr></td>
+            <td><?=sprintf('%5.02f', round($val['avgOverall'],2)); ?></td>
+            <td><?=sprintf('%5.02f', round($val['avg7day'],2)); ?></td>
         </tr>
         <?php endif; ?>
     <?php endforeach; ?>
