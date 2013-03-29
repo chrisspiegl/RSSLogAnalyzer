@@ -56,7 +56,7 @@ if(! isset($_GET['details']) || empty($_GET['details'])){
             <td><abbr title="<?=$val['max7dayDay']; ?>"><?=$val['max7day']; ?></abbr></td>
             <td><?=sprintf('%5.02f', round($val['avgOverall'],2)); ?></td>
             <td><?=sprintf('%5.02f', round($val['avg7day'],2)); ?></td>
-            <td><a href="?details=<?=$page; ?>">Details</a></td>
+            <td><a href="http://<?=$_SERVER['SERVER_NAME'] . $_SERVER['SCRIPT_NAME'];?>?details=<?=$page; ?>">Details</a></td>
         </tr>
         <?php endif; ?>
     <?php endforeach; ?>
@@ -75,7 +75,6 @@ if(! isset($_GET['details']) || empty($_GET['details'])){
         <td>Max 7 Days</td>
         <td>Avg Overall</td>
         <td>Avg 7 Day</td>
-        <td></td>
     </tr>
     <?php
     $page = $_GET['details'];
@@ -85,11 +84,10 @@ if(! isset($_GET['details']) || empty($_GET['details'])){
     <?php if(preg_match($API_AUTH[$_SERVER['PHP_AUTH_USER']][1], $page)): ?>
     <tr>
         <td><?=$page; ?></td>
-        <td><abbr title="<?=$val['maxOverallDay']; ?>"><?=$val['maxOverall']; ?></abbr></td>
-        <td><abbr title="<?=$val['max7dayDay']; ?>"><?=$val['max7day']; ?></abbr></td>
+        <td class="maxOverall"><abbr title="<?=$val['maxOverallDay']; ?>"><?=$val['maxOverall']; ?></abbr></td>
+        <td class="max7"><abbr title="<?=$val['max7dayDay']; ?>"><?=$val['max7day']; ?></abbr></td>
         <td><?=sprintf('%5.02f', round($val['avgOverall'],2)); ?></td>
         <td><?=sprintf('%5.02f', round($val['avg7day'],2)); ?></td>
-        <td><a href="?details=<?=$page; ?>">Details</a></td>
     </tr>
     <?php endif; ?>
 </table>
