@@ -68,6 +68,32 @@ if(! isset($_GET['details']) || empty($_GET['details'])){
 
 <h2>Stats for: <?=$_GET['details']; ?> <small><a href="http://<?=$_SERVER['SERVER_NAME'] . $_SERVER['SCRIPT_NAME'];?>">Overview</a></small></h2>
 
+<table>
+    <tr>
+        <td>Domain</td>
+        <td>Max Overall</td>
+        <td>Max 7 Days</td>
+        <td>Avg Overall</td>
+        <td>Avg 7 Day</td>
+        <td></td>
+    </tr>
+    <?php
+    $page = $_GET['details'];
+    $val = $analyzedData[$page];
+    ?>
+
+    <?php if(preg_match($API_AUTH[$_SERVER['PHP_AUTH_USER']][1], $page)): ?>
+    <tr>
+        <td><?=$page; ?></td>
+        <td><abbr title="<?=$val['maxOverallDay']; ?>"><?=$val['maxOverall']; ?></abbr></td>
+        <td><abbr title="<?=$val['max7dayDay']; ?>"><?=$val['max7day']; ?></abbr></td>
+        <td><?=sprintf('%5.02f', round($val['avgOverall'],2)); ?></td>
+        <td><?=sprintf('%5.02f', round($val['avg7day'],2)); ?></td>
+        <td><a href="?details=<?=$page; ?>">Details</a></td>
+    </tr>
+    <?php endif; ?>
+</table>
+<br />
 <?php
 
 $reversed = array_reverse($data[$_GET['details']]);
@@ -100,6 +126,11 @@ $reversed = array_reverse($data[$_GET['details']]);
     </tr>
     <?php } ?>
 </table>
+
+<?php
+}else{
+?>
+    <h1>You are not allowed in here!</h1>
 <?php
 }
 ?>
