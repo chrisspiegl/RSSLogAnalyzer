@@ -44,3 +44,11 @@ tr:last-of-type td {
 abbr {
     border-bottom: 1px dashed black;
 }
+
+.max7 {
+    background-color: #FF6256;
+}
+
+.maxOverall {
+    background-color: #FF62A3;
+}
