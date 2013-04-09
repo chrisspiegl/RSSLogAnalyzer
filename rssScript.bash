@@ -6,6 +6,9 @@ RSS_LOG_FILE="PATH_AND_FILENAME_OF_THE_FILE_WHERE_THE_SCRIPT_SHOULD_LOG_INTO"
 
 # --- Required variables ---
 RSS_URI="/feed"
+MAIL_TO_SPECIAL=0 # 1=on / 0=off
+MAIL_TO_SPECIAL_DOMAIN=(    "YOURDOMAIN1.com"   "YOURDOMAIN2.com"   )   # To send an email per domain (for spezific domains)
+MAIL_TO_SPECIAL_MAIL=(      "YOUR@EMAIL.com"    "YOUR@EMAIL.com"    )   # Add the domain in the upper row and at the same place the email
 MAIL_TO="YOUR_EMAIL_ADRESS"
 LOG_FILE="PATH_TO_APACHE_LOG_FILE"
 LOG_DATE_FORMAT="%d/%b/%Y"
@@ -51,7 +54,7 @@ for entry in $FORDOMAINS; do
     LOGROW+=$(
         printf "$entry/%d/%d/%d/%d|" $GRSUBS $OTHERSUBS $IPSUBS `expr $GRSUBS + $OTHERSUBS + $IPSUBS`
     )
-    REPORT+=$(
+    REPORT_SINGLE=$(
         printf "\n\n\nFeed stats for $entry $HUMAN_FDATE:\n\n"
         printf "%'8d Google Reader subscribers\n" $GRSUBS
         printf "%'8d subscribers from other aggregators\n" $OTHERSUBS
@@ -59,6 +62,17 @@ for entry in $FORDOMAINS; do
         echo   "--------"
         printf "%'8d total subscribers\n\n==============================" `expr $GRSUBS + $OTHERSUBS + $IPSUBS`
     )
+    REPORT+=$REPORT_SINGLE
+    if [ $MAIL_TO_SPECIAL -eq 1 ]; then
+        for((i=0;i<${#MAIL_TO_SPECIAL_DOMAIN[@]}; i++)); do
+            if [ $entry = ${MAIL_TO_SPECIAL_DOMAIN[${i}]} ]; then
+                #echo "MAIL AN: " $entry " WITH " ${MAIL_TO_SPECIAL_MAIL[${i}]} " THIS IS WHAT I SAY: " $REPORT_SINGLE
+                echo "$REPORT_SINGLE " | mail -s "[$HUMAN_FDATE] $MAIL_SUBJECT" ${MAIL_TO_SPECIAL_MAIL[${i}]}
+                EMAILADDR=${MAIL_TO_SPECIAL_MAIL[${i}]}
+                printf "Email sent to: $EMAILADDR\n"
+            fi
+        done;
+    fi
 done;
 
 
@@ -66,6 +80,6 @@ echo "$REPORT"
 echo ""
 echo "Also emailed to $MAIL_TO."
 
-# Save the rss stats into a log file to later calc averages or such
+# Save the rss stats into a log file to later calc averages or echoh
 echo "$LOGROW" >> $RSS_LOG_FILE
 echo "$REPORT " | mail -s "[$HUMAN_FDATE] $MAIL_SUBJECT" $MAIL_TO
