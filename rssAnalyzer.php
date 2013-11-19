@@ -1,12 +1,11 @@
-<?php /* With apologies to Dr. Drang and John Siracusa.
+<?php /*
 
-    feed-subscribers.php
+    rssAnalyzer.php
 
-    By Marco Arment.
-    Released into the public domain with no warranties and no restrictions.
+    Based on a script created by Marco Arment.
 
     Usage: Pipe an Apache access log into stdin, e.g.:
-        php -f feed-subscribers.php < /var/log/httpd/access_log
+        php -f rssAnalyzer.php < /var/log/httpd/access_log
 
     It's up to you whether you want to restrict its input to certain date ranges.
     In theory, it doesn't actually matter very much, and you may need a span of
@@ -33,20 +32,20 @@
 
 // -------------- CONFIG ------------------------ */
 
-$log_stats = '/root/RSSNew/rssStats.log';
+$log_stats = DOC_ROOT . '/rssStats.log';
 
-$email = true;
-$email_from = 'christoph.spiegl@gmail.com';
-$email_full_stats = 'chris@chrissp.com';
+$email = false;
+$email_from = '%ADMIN_EMAIL%';
+$email_full_stats = '%RECEVING_THE_FULL_STATS_EMAIL%';
 $email_stats_per_domain = array(
-    'purrrfekt.de' => 'me@purrrfekt.de',
+    '%DOMAIN_URL%' => '%EMAIL_SHOULD_RECEIVE_STATS_OF_THIS_URL%',
 );
 
 $email_smtp['host'] = 'smtp.gmail.com';
 $email_smtp['port'] = 465;
 $email_smtp['auth'] = "ssl";
-$email_smtp['username'] = 'christoph.spiegl@gmail.com';
-$email_smtp['password'] = 'aqbvoouhshhvhzbk';
+$email_smtp['username'] = '%USERNAME_MAIL%';
+$email_smtp['password'] = '%PASSWORD_MAIL%';
 
 $feed_uris = array(
     '/feed',
