@@ -52,8 +52,8 @@ if(! isset($_GET['details']) || empty($_GET['details'])){
         <?php if(preg_match($API_AUTH[$_SERVER['PHP_AUTH_USER']][1], $page)): ?>
         <tr>
             <td><?=$page; ?></td>
-            <td><abbr title="<?=$val['maxOverallDay']; ?>"><?=$val['maxOverall']; ?></abbr></td>
-            <td><abbr title="<?=$val['max7dayDay']; ?>"><?=$val['max7day']; ?></abbr></td>
+            <td><abbr title="<?=date('Y-m-d', $val['maxOverallDay']); ?>"><?=$val['maxOverall']; ?></abbr></td>
+            <td><abbr title="<?=date('Y-m-d', $val['max7dayDay']); ?>"><?=$val['max7day']; ?></abbr></td>
             <td><?=sprintf('%5.02f', round($val['avgOverall'],2)); ?></td>
             <td><?=sprintf('%5.02f', round($val['avg7day'],2)); ?></td>
             <td><a href="http://<?=$_SERVER['SERVER_NAME'] . $_SERVER['SCRIPT_NAME'];?>?details=<?=$page; ?>">Details</a></td>
@@ -81,46 +81,61 @@ if(! isset($_GET['details']) || empty($_GET['details'])){
     $val = $analyzedData[$page];
     ?>
 
-    <?php if(preg_match($API_AUTH[$_SERVER['PHP_AUTH_USER']][1], $page)): ?>
     <tr>
         <td><?=$page; ?></td>
-        <td class="maxOverall"><abbr title="<?=$val['maxOverallDay']; ?>"><?=$val['maxOverall']; ?></abbr></td>
-        <td class="max7"><abbr title="<?=$val['max7dayDay']; ?>"><?=$val['max7day']; ?></abbr></td>
+        <td class="maxOverall"><abbr title="<?=date('Y-m-d', $val['maxOverallDay']); ?>"><?=$val['maxOverall']; ?></abbr></td>
+        <td class="max7"><abbr title="<?=date('Y-m-d', $val['max7dayDay']); ?>"><?=$val['max7day']; ?></abbr></td>
         <td><?=sprintf('%5.02f', round($val['avgOverall'],2)); ?></td>
         <td><?=sprintf('%5.02f', round($val['avg7day'],2)); ?></td>
     </tr>
-    <?php endif; ?>
 </table>
 <br />
 <?php
 
-$reversed = array_reverse($data[$_GET['details']]);
+$reversed = array_reverse($data[$_GET['details']], true);
 
 ?>
 
-<table>
-    <tr>
-        <td>Date</td>
-        <td>Google</td>
-        <td>Aggregators</td>
-        <td>Direct</td>
-        <td>Overall</td>
-    </tr>
+<table class="timeline">
+    <thead>
+        <tr>
+            <td class="date"><span>Date</span></td>
+            <td><span>Overall</span></td>
+            <?php
+                arsort($siteAggregators);
+                foreach ($siteAggregators[$_GET['details']] as $userAgent => $totalSubs) {
+                    if ($totalSubs > 0.10 * $val['avg7day']) {
+                        $userAgentShort = substr($userAgent, 0, 9);
+                        echo "<td><span>$userAgentShort</span></td>";
+                    }
+                }
+            ?>
+        </tr>
+    </thead>
     <?php
     $i = 30;
-    foreach($reversed as $row=>$rowVal){
+    foreach($reversed as $date=>$rowVal){
         $i--;
         if($i <= 0) break;
         $max = '';
-        if($row == $analyzedData[$_GET['details']]['maxOverallDay']) $max = 'maxOverall';
-        elseif($row == $analyzedData[$_GET['details']]['max7dayDay']) $max = 'max7';
+        if($date == $analyzedData[$_GET['details']]['maxOverallDay']) $max = 'maxOverall';
+        elseif($date == $analyzedData[$_GET['details']]['max7dayDay']) $max = 'max7';
     ?>
     <tr class="<?=$max; ?>">
-        <td><?=$row; ?></td>
-        <td><?=$rowVal[1]; ?></td>
-        <td><?=$rowVal[2]; ?></td>
-        <td><?=$rowVal[3]; ?></td>
-        <td><?=$rowVal[4]; ?></td>
+        <td><?=date('Y-m-d', $date); ?></td>
+        <td class="overallCell"><?=$rowVal['total_subs']; ?></td>
+        <?php
+            foreach ($siteAggregators[$_GET['details']] as $userAgent => $totalSubs) {
+                if ( $totalSubs > 0.10 * $val['avg7day'] ) {
+                    if ( isset($rowVal['aggregators'][$userAgent])) {
+                        $subs = $rowVal['aggregators'][$userAgent];
+                        echo "<td>$subs</td>";
+                    } else {
+                        echo "<td>0</td>";
+                    }
+                }
+            }
+        ?>
     </tr>
     <?php } ?>
 </table>

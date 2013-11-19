@@ -27,6 +27,7 @@ td {
     padding: .5em 1em;
     border-right: 1px solid black;
     border-bottom: 1px solid black;
+    min-width: 20px;
 }
 
 td:first-of-type {
@@ -39,6 +40,32 @@ td:last-of-type {
 
 tr:last-of-type td {
     border-bottom: 0;
+}
+
+.timeline thead td {
+    height: 100px;
+    padding: 0;
+    margin: 0;
+    border-bottom: 1px solid black;
+    text-align: center;
+}
+.timeline thead span {
+    display: block;
+    min-width: 60px;
+    padding: 0;
+    margin: 0;
+    -webkit-transform: rotate(-80deg);
+    -moz-transform: rotate(-80deg);
+    -ms-transform: rotate(-80deg);
+    -o-transform: rotate(-80deg);
+}
+
+.timeline .date {
+    min-width: 120px !important;
+}
+
+.timeline .overallCell {
+    font-weight: bold;
 }
 
 abbr {

@@ -26,23 +26,44 @@ function processLog() {
  *
  */
 function readLog() {
-    global $data;
+    global $data, $siteAggregators;
 
     $lines = file(LOG_FILE);
     $i = 0;
     $data = array();
+    $siteAggregators = array();
+    $date7daysAgo = mktime(0, 0, 0, date('m'), date('d') - 7, date("Y"));
+    $datesInCalculation = array();
+
     foreach ($lines as $line) {
-        $i++;
         trim_value($line);
         if (substr($line, 0, 1) != "#") {
-            $entries = explode("|", $line);
-            for ($j = 1; $j < count($entries); $j++) {
-                if (isset($entries[$j]) && $entries[$j] != "" ) {
-                    trim_value($entries[$j]);
-                    $entry = explode("/", $entries[$j]);
-                    $sitename = $entry[0];
-                    unset($entry[0]);
-                    $data[$sitename][$entries[0]] = $entry;
+            $entries = unserialize($line);
+            $date = $entries['date'];
+            foreach ($entries['data'] as $sitename => $stats) {
+                $totalSubs = 0;
+                $aggregators = array();
+                // If the date is already calculated do not add it
+                if ( ! isset($datesInCalculation[$sitename][date("d.m.y", $date)])) {
+                    $datesInCalculation[$sitename][date("d.m.y", $date)] = true;
+
+                    foreach ($stats as $value) {
+                        $aggregators[$value['user_agent']] = $value['total_subs'];
+                        if ($date7daysAgo < $date) {
+                            if ( ! isset($siteAggregators[$sitename][$value['user_agent']])) {
+                                $siteAggregators[$sitename][$value['user_agent']] = $value['total_subs'];
+                            } else {
+                                $siteAggregators[$sitename][$value['user_agent']] += $value['total_subs'];
+                            }
+                        }
+
+                        $totalSubs += $value['total_subs'];
+                    }
+
+                    $data[$sitename][$date] = array(
+                        'total_subs' => $totalSubs,
+                        'aggregators' => $aggregators
+                    );
                 }
             }
         }
@@ -58,7 +79,7 @@ function calcLog() {
 
     $date7daysAgo = mktime(0, 0, 0, date('m'), date('d') - 7, date("Y"));
 
-    foreach ($data as $key => $val) {
+    foreach ($data as $sitename => $pageData) {
         $maxOverall = 0;
         $maxOverallDay = 0;
         $max7day = 0;
@@ -67,29 +88,31 @@ function calcLog() {
         $avg7day = 0;
         $countDays = 0;
 
-        foreach ($val as $k=>$v) {
-            $avgOverall += $v[4];
-            if ($v[4] > $maxOverall) {
-                $maxOverall = $v[4];
-                $maxOverallDay = $k;
+        foreach ($pageData as $date=>$stats) {
+            $totalSubs = $stats['total_subs'];
+
+            $avgOverall += $totalSubs;
+            if ($totalSubs > $maxOverall) {
+                $maxOverall = $totalSubs;
+                $maxOverallDay = $date;
             }
-            if ($date7daysAgo < strtotime($k)) {
+            if ($date7daysAgo < $date) {
                 $countDays++;
-                $avg7day += $v[4];
-                if ($v[4] > $max7day) {
-                    $max7day = $v[4];
-                    $max7dayDay = $k;
+                $avg7day += $totalSubs;
+                if ($totalSubs > $max7day) {
+                    $max7day = $totalSubs;
+                    $max7dayDay = $date;
                 }
             }
         }
 
-        $analyzedData[$key] = array(
+        $analyzedData[$sitename] = array(
             'maxOverall' => $maxOverall,
             'maxOverallDay' => $maxOverallDay,
             'max7day' => $max7day,
             'max7dayDay' => $max7dayDay,
-            'avgOverall' => $avgOverall/count($val),
-            'avg7day' => $avg7day/$countDays
+            'avgOverall' => $avgOverall/count($pageData),
+            'avg7day' => ($avg7day > 0) ? $avg7day/$countDays : 0
         );
     }
 }
