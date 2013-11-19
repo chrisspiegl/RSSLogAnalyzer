@@ -1,3 +1,12 @@
+
+# IMPORTANT
+
+The old version is NOT compatible with the new version.
+
+Documentation needs an update!
+
+# README
+
 This tool helps me keep track of my subscribers. It analyzes the apache log file and cumulates the subscribers. It includes Google Reader Subscribers, Other Agregators and Direct Subscribers.
 
 I got inspired by Marco Arment because of his Github-Gist https://gist.github.com/3783146 and just improved upon it to count the RSS Subscribers for more than one domain. In addition I added an admin interface for easy accessibility of:
