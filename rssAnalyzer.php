@@ -29,41 +29,9 @@
     Note that Google Reader is NOT included by default, since while its crawler is
     still running at the time of writing, nobody is seeing its results.
 
+*/
 
-// -------------- CONFIG ------------------------ */
-
-$log_stats = DOC_ROOT . '/rssStats.log';
-
-$email = false;
-$email_from = '%ADMIN_EMAIL%';
-$email_full_stats = '%RECEVING_THE_FULL_STATS_EMAIL%';
-$email_stats_per_domain = array(
-    '%DOMAIN_URL%' => '%EMAIL_SHOULD_RECEIVE_STATS_OF_THIS_URL%',
-);
-
-$email_smtp['host'] = 'smtp.gmail.com';
-$email_smtp['port'] = 465;
-$email_smtp['auth'] = "ssl";
-$email_smtp['username'] = '%USERNAME_MAIL%';
-$email_smtp['password'] = '%PASSWORD_MAIL%';
-
-$feed_uris = array(
-    '/feed',
-    '/feed/',
-    '/feed.xml',
-    '/rss',
-    '/rss/',
-    '/rss.xml',
-    '/atom.xml',
-    '/atom',
-    '/atom/',
-);
-
-$minimum_subscribers_to_display = 2;
-$include_google_reader = false;
-
-// ------------- END CONFIG ----------------------
-// ...unless you want to add more regexes to this:
+require(DOC_ROOT . '/config.php');
 
 function normalize_user_agent_string($user_agent)
 {
@@ -324,7 +292,7 @@ if( $email ){
 }
 
 
-$handle = fopen($log_stats, 'a');
+$handle = fopen(LOG_FILE, 'a');
 flock($handle, LOCK_EX);
 
 fputs($handle, serialize(
