@@ -17,7 +17,7 @@ $API_AUTH = array(
 // Define some folders for the process
 define('DOC_ROOT', dirname(__FILE__));
 define('LOG_DIR', DOC_ROOT . '/');
-define('LOG_FILE', DOC_ROOT . '/rssStats.log');
+define('LOG_FILE', '/var/www/example.com/rssStats.log'); // Absolute path needed!
 
 
 // Analyzer Config
