@@ -31,7 +31,7 @@
 
 */
 
-require('./config.php');
+require(DOC_ROOT . '/config.php');
 
 function normalize_user_agent_string($user_agent)
 {
