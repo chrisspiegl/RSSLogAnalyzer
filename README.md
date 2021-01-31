@@ -1,11 +1,16 @@
+![current status](https://img.shields.io/badge/current%20status-halted-red?style=flat-square)
 
-# IMPORTANT
+## Halted Project
+
+I lost motivation to work on this for now. The code is here if you want to take a look.
+
+## IMPORTANT
 
 The old version is NOT compatible with the new version.
 
 Documentation needs an update!
 
-# README
+## README
 
 This tool helps me keep track of my subscribers. It analyzes the apache log file and cumulates the subscribers. It includes Google Reader Subscribers, Other Agregators and Direct Subscribers.
 
